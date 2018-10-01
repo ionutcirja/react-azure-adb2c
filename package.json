@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/JamesRandall/react-azure-adb2c#readme",
   "dependencies": {
-    "msal": "^0.1.5"
+    "msal": "^0.2.3"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0"
@@ -40,8 +40,8 @@
     "babel-plugin-import": "^1.2.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.1",
-    "babel-runtime": "6.23.0",
     "babel-preset-react-app": "^3.0.0",
+    "babel-runtime": "6.23.0",
     "cross-env": "^5.1.4",
     "eslint": "^4.12.1",
     "eslint-config-airbnb": "^16.1.0",
