@@ -6,19 +6,39 @@
 // and these occur before any local assignment can take place. Not nice but its how it works.
 import * as Msal from 'msal';
 import React, { Component } from 'react';
+import type { ComponentType } from 'react';
 
-let appConfig = {
-  instance: null,
-  tenant: null,
-  signInPolicy: null,
-  resetPolicy: null,
-  applicationId: null,
-  cacheLocation: null,
-  redirectUri: null,
-  postLogoutRedirectUri: null,
+type Config = {
+  instance: string,
+  tenant: string,
+  signInPolicy: string,
+  resetPolicy: string,
+  applicationId: string,
+  cacheLocation: string,
+  redirectUri: string,
+  postLogoutRedirectUri: string,
+  scopes?: Array<string>
 };
 
-const state = {
+let appConfig: Config = {
+  instance: '',
+  tenant: '',
+  signInPolicy: '',
+  resetPolicy: '',
+  applicationId: '',
+  cacheLocation: '',
+  redirectUri: '',
+  postLogoutRedirectUri: '',
+};
+
+type State = {
+  stopLoopingRedirect: boolean,
+  launchApp: Function | null,
+  accessToken: string | null,
+  scopes?: Array<string>,
+};
+
+const state: State = {
   stopLoopingRedirect: false,
   launchApp: null,
   accessToken: null,
@@ -35,7 +55,9 @@ function loggerCallback(logLevel: LogLevel, message: string) {
 
 const logger = new Msal.Logger(loggerCallback, { level: Msal.LogLevel.Warning });
 
-function acquireToken(successCallback: Function) {
+type Callback = Function | null;
+
+function acquireToken(successCallback: Callback = null) {
   const localMsalApp = window.msal;
   const user = localMsalApp.getUser(state.scopes);
   if (!user) {
@@ -80,7 +102,7 @@ function authCallback(errorDesc: string, token: string, error: string) {
 }
 
 const authentication = {
-  initialize: (config) => {
+  initialize: (config: Config) => {
     appConfig = config;
     const instance = config.instance ? config.instance : 'https://login.microsoftonline.com/tfp/';
     const authority = `${instance}${config.tenant}/${config.signInPolicy}`;
@@ -104,7 +126,7 @@ const authentication = {
       },
     );
   },
-  run: (launchApp) => {
+  run: (launchApp: Function) => {
     state.launchApp = launchApp;
     if (!window.msal.isCallback(window.location.hash)
       && window.parent === window && !window.opener) {
@@ -113,21 +135,21 @@ const authentication = {
       }
     }
   },
-  required: (WrappedComponent, renderLoading) => {
-    type Props = {
+  required: (WrappedComponent: ComponentType<any>, renderLoading: Function) => {
+    type CProps = {
       [key: string]: any,
     }
 
-    type State = {
+    type CState = {
       signedIn: boolean,
     };
 
-    return class extends Component<Props, State> {
+    return class extends Component<CProps, CState> {
       state = {
         signedIn: false,
       };
 
-      constructor(props) {
+      constructor(props: CProps) {
         super(props);
         acquireToken(() => {
           this.setState({
