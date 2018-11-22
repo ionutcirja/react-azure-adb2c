@@ -1,3 +1,5 @@
+// @flow
+
 // Note on window.msal usage.
 // There is little point holding the object constructed by new Msal.UserAgentApplication
 // as the constructor for this class will make callbacks to the acquireToken function
@@ -23,13 +25,17 @@ const state = {
   scopes: [],
 };
 
-function loggerCallback(logLevel, message) {
+type LogLevel = {
+  level: string,
+};
+
+function loggerCallback(logLevel: LogLevel, message: string) {
   console.log(message);
 }
 
 const logger = new Msal.Logger(loggerCallback, { level: Msal.LogLevel.Warning });
 
-function acquireToken(successCallback) {
+function acquireToken(successCallback: Function) {
   const localMsalApp = window.msal;
   const user = localMsalApp.getUser(state.scopes);
   if (!user) {
@@ -62,7 +68,7 @@ function redirect() {
   acquireToken();
 }
 
-function authCallback(errorDesc, token, error) {
+function authCallback(errorDesc: string, token: string, error: string) {
   if (errorDesc && errorDesc.indexOf('AADB2C90118') > -1) {
     redirect();
   } else if (errorDesc) {
@@ -107,11 +113,18 @@ const authentication = {
       }
     }
   },
-  required: (WrappedComponent, renderLoading) => (
-    class extends Component {
+  required: (WrappedComponent, renderLoading) => {
+    type Props = {
+      [key: string]: any,
+    }
+
+    type State = {
+      signedIn: boolean,
+    };
+
+    return class extends Component<Props, State> {
       state = {
         signedIn: false,
-        error: null,
       };
 
       constructor(props) {
@@ -130,8 +143,8 @@ const authentication = {
         }
         return typeof renderLoading === 'function' ? renderLoading() : null;
       }
-    }
-  ),
+    };
+  },
   signOut: () => window.msal.logout(),
   getAccessToken: () => state.accessToken,
 };
