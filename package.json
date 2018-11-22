@@ -2,11 +2,42 @@
   "name": "react-azure-adb2c",
   "version": "0.2.0",
   "description": "Authentication library for Azure AD B2C and ReactJS",
-  "main": "lib/react-azure-adb2c.js",
+  "main": "lib/index.js",
   "scripts": {
-    "compile": "cross-env NODE_ENV=production babel src --out-dir lib",
-    "prepublish": "npm run compile"
+    "compile": "cross-env NODE_ENV=production babel -d lib/ src/ --ignore **/*.spec.js",
+    "prepublish": "npm run lint && npm run flow && npm test && npm run compile",
+    "lint": "eslint src/**",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:watchAll": "jest --watchAll",
+    "flow": "flow"
   },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./config/enzyme-setup.js",
+    "verbose": true,
+    "collectCoverage": true,
+    "testURL": "http://localhost/",
+    "collectCoverageFrom": [
+      "**/*.{js}",
+      "!**/lib/**",
+      "!**/node_modules/**",
+      "!**/config/**",
+      "!**/coverage/**"
+    ],
+    "testMatch": [
+      "**/__tests__/?(*.)(spec|test).js"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+    ]
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jamesrandall/react-azure-adb2c.git"
@@ -32,22 +63,21 @@
     "react": "^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "6.24.1",
-    "babel-eslint": "^8.0.3",
-    "babel-jest": "20.0.3",
-    "babel-loader": "7.0.0",
-    "babel-plugin-import": "^1.2.1",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react-app": "^3.0.0",
-    "babel-runtime": "6.23.0",
-    "cross-env": "^5.1.4",
-    "eslint": "^4.12.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-defaults": "^9.0.0",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
+    "cross-env": "^5.2.0",
+    "enzyme": "^3.7.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-flowtype": "^3.2.0",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.5.1"
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
+    "flow-bin": "^0.86.0",
+    "jest": "^23.6.0",
+    "pre-commit": "^1.2.2"
   }
 }
