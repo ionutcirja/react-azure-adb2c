@@ -8,6 +8,7 @@ import * as Msal from 'msal';
 import React, { Component } from 'react';
 import type { ComponentType } from 'react';
 import logger from './logger';
+import acquireToken from './acquire-token';
 
 type Config = {
   instance: string,
@@ -46,39 +47,15 @@ const state: State = {
   scopes: [],
 };
 
-type Callback = Function | null;
-
-function acquireToken(successCallback: Callback = null) {
-  const localMsalApp = window.msal;
-  const user = localMsalApp.getUser(state.scopes);
-  if (!user) {
-    localMsalApp.loginRedirect(state.scopes);
-  } else {
-    localMsalApp
-      .acquireTokenSilent(state.scopes)
-      .then(
-        (accessToken) => {
-          state.accessToken = accessToken;
-          if (state.launchApp) {
-            state.launchApp();
-          }
-          if (successCallback) {
-            successCallback();
-          }
-        },
-        (error) => {
-          if (error) {
-            localMsalApp.acquireTokenRedirect(state.scopes);
-          }
-        },
-      );
-  }
-}
-
 function redirect() {
   const localMsalApp = window.msal;
   localMsalApp.authority = `https://login.microsoftonline.com/tfp/${appConfig.tenant}/${appConfig.resetPolicy}`;
-  acquireToken();
+  acquireToken(state.scopes).then((accessToken: string) => {
+    state.accessToken = accessToken;
+    if (state.launchApp) {
+      state.launchApp();
+    }
+  });
 }
 
 function authCallback(errorDesc: string, token: string, error: string) {
@@ -88,7 +65,12 @@ function authCallback(errorDesc: string, token: string, error: string) {
     console.log(`${error}:${errorDesc}`);
     state.stopLoopingRedirect = true;
   } else {
-    acquireToken();
+    acquireToken(state.scopes).then((accessToken: string) => {
+      state.accessToken = accessToken;
+      if (state.launchApp) {
+        state.launchApp();
+      }
+    });
   }
 }
 
@@ -122,7 +104,12 @@ const authentication = {
     if (!window.msal.isCallback(window.location.hash)
       && window.parent === window && !window.opener) {
       if (!state.stopLoopingRedirect) {
-        acquireToken();
+        acquireToken(state.scopes).then((accessToken: string) => {
+          state.accessToken = accessToken;
+          if (state.launchApp) {
+            state.launchApp();
+          }
+        });
       }
     }
   },
@@ -142,7 +129,13 @@ const authentication = {
 
       constructor(props: CProps) {
         super(props);
-        acquireToken(() => {
+
+        acquireToken(state.scopes).then((accessToken: string) => {
+          state.accessToken = accessToken;
+          if (state.launchApp) {
+            state.launchApp();
+          }
+
           this.setState({
             signedIn: true,
           });
