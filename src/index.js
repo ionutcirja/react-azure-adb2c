@@ -7,6 +7,7 @@
 import * as Msal from 'msal';
 import React, { Component } from 'react';
 import type { ComponentType } from 'react';
+import logger from './logger';
 
 type Config = {
   instance: string,
@@ -44,16 +45,6 @@ const state: State = {
   accessToken: null,
   scopes: [],
 };
-
-type LogLevel = {
-  level: string,
-};
-
-function loggerCallback(logLevel: LogLevel, message: string) {
-  console.log(message);
-}
-
-const logger = new Msal.Logger(loggerCallback, { level: Msal.LogLevel.Warning });
 
 type Callback = Function | null;
 
