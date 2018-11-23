@@ -9,6 +9,7 @@ export type Config = {
   cacheLocation: string,
   redirectUri: string,
   postLogoutRedirectUri: string,
+  validateAuthority: boolean,
   scopes?: Array<string>
 };
 
@@ -21,6 +22,7 @@ let appConfig: Config = {
   cacheLocation: '',
   redirectUri: '',
   postLogoutRedirectUri: '',
+  validateAuthority: true,
 };
 
 export const setConfig = (config: Config) => {

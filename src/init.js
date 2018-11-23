@@ -57,6 +57,7 @@ export default (config: Config) => {
     authCallback,
     {
       logger,
+      validateAuthority: config.validateAuthority,
       cacheLocation: config.cacheLocation,
       postLogoutRedirectUri: config.postLogoutRedirectUri,
       redirectUri: config.redirectUri,
