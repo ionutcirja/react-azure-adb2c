@@ -50,12 +50,13 @@ const state: State = {
 function redirect() {
   const localMsalApp = window.msal;
   localMsalApp.authority = `https://login.microsoftonline.com/tfp/${appConfig.tenant}/${appConfig.resetPolicy}`;
-  acquireToken(state.scopes).then((accessToken: string) => {
-    state.accessToken = accessToken;
-    if (state.launchApp) {
-      state.launchApp();
-    }
-  });
+  acquireToken(state.scopes)
+    .then((accessToken: string) => {
+      state.accessToken = accessToken;
+      if (state.launchApp) {
+        state.launchApp();
+      }
+    });
 }
 
 function authCallback(errorDesc: string, token: string, error: string) {
@@ -65,12 +66,13 @@ function authCallback(errorDesc: string, token: string, error: string) {
     console.log(`${error}:${errorDesc}`);
     state.stopLoopingRedirect = true;
   } else {
-    acquireToken(state.scopes).then((accessToken: string) => {
-      state.accessToken = accessToken;
-      if (state.launchApp) {
-        state.launchApp();
-      }
-    });
+    acquireToken(state.scopes)
+      .then((accessToken: string) => {
+        state.accessToken = accessToken;
+        if (state.launchApp) {
+          state.launchApp();
+        }
+      });
   }
 }
 
@@ -104,12 +106,13 @@ const authentication = {
     if (!window.msal.isCallback(window.location.hash)
       && window.parent === window && !window.opener) {
       if (!state.stopLoopingRedirect) {
-        acquireToken(state.scopes).then((accessToken: string) => {
-          state.accessToken = accessToken;
-          if (state.launchApp) {
-            state.launchApp();
-          }
-        });
+        acquireToken(state.scopes)
+          .then((accessToken: string) => {
+            state.accessToken = accessToken;
+            if (state.launchApp) {
+              state.launchApp();
+            }
+          });
       }
     }
   },
@@ -130,16 +133,17 @@ const authentication = {
       constructor(props: CProps) {
         super(props);
 
-        acquireToken(state.scopes).then((accessToken: string) => {
-          state.accessToken = accessToken;
-          if (state.launchApp) {
-            state.launchApp();
-          }
+        acquireToken(state.scopes)
+          .then((accessToken: string) => {
+            state.accessToken = accessToken;
+            if (state.launchApp) {
+              state.launchApp();
+            }
 
-          this.setState({
-            signedIn: true,
+            this.setState({
+              signedIn: true,
+            });
           });
-        });
       }
 
       render() {
