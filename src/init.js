@@ -1,4 +1,5 @@
 // @flow
+
 import * as Msal from 'msal';
 import type { Config } from './config';
 import { getConfig, setConfig } from './config';

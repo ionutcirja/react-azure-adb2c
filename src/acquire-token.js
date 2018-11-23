@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 // @flow
+
 export default (scopes: Array<string>) => {
   const localMsalApp = window.msal;
   const user = localMsalApp.getUser(scopes);

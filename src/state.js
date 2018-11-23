@@ -1,4 +1,5 @@
 // @flow
+
 type State = {
   stopLoopingRedirect: boolean,
   launchApp: Function | null,

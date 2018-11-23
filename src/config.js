@@ -1,4 +1,5 @@
 // @flow
+
 export type Config = {
   instance: string,
   tenant: string,

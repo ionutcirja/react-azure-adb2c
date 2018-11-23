@@ -1,4 +1,5 @@
 // @flow
+
 import React, { Component } from 'react';
 import type { ComponentType } from 'react';
 import acquireToken from './acquire-token';
